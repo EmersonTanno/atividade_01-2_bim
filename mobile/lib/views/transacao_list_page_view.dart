@@ -36,6 +36,38 @@ class _TransacaoListPageViewState extends State<TransacaoListPageView> {
     }
   }
 
+  void _showDeleteDialogue(dynamic transacao) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                'Deletar a transação de ${transacao['nome']}, no valor de R\$${transacao['valor']}?'),
+            content: SingleChildScrollView(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Cancelar')),
+                  ElevatedButton(
+                      onPressed: () {
+                        _deleteTransacao(int.parse(transacao['id']));
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Deletar',
+                        style: TextStyle(color: Colors.red),
+                      ))
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   void _showEditDialog(Map<String, dynamic> transacao) {
     String nome = transacao['nome'];
     double valor = transacao['valor'];
@@ -88,12 +120,15 @@ class _TransacaoListPageViewState extends State<TransacaoListPageView> {
                     _fetchTransacoes();
                   }).catchError((error) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Erro ao editar transação: $error')),
+                      SnackBar(
+                          content: Text('Erro ao editar transação: $error')),
                     );
                   });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Por favor, preencha os campos corretamente.')),
+                    SnackBar(
+                        content: Text(
+                            'Por favor, preencha os campos corretamente.')),
                   );
                 }
               },
@@ -104,8 +139,6 @@ class _TransacaoListPageViewState extends State<TransacaoListPageView> {
       },
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +165,7 @@ class _TransacaoListPageViewState extends State<TransacaoListPageView> {
                 IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () {
-                    _deleteTransacao(int.parse(transacao['id']));
+                    _showDeleteDialogue(transacao);
                   },
                 ),
               ],
