@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:atividade_01/services/transacao_service.dart';
 
-class FormPageView extends StatefulWidget {
-  const FormPageView({super.key});
+class EditTransacaoPageView extends StatefulWidget {
+  final Map<String, dynamic> transacao;
+
+  const EditTransacaoPageView({Key? key, required this.transacao}) : super(key: key);
 
   @override
-  _FormPageViewState createState() => _FormPageViewState();
+  _EditTransacaoPageViewState createState() => _EditTransacaoPageViewState();
 }
 
-class _FormPageViewState extends State<FormPageView> {
+class _EditTransacaoPageViewState extends State<EditTransacaoPageView> {
   final TransacaoService transacaoService = TransacaoService();
+  
+  late String nome;
+  late double valor;
+
   final _formKey = GlobalKey<FormState>();
 
-  String nome = '';
-  double valor = 0.0;
-
-  final TextEditingController nomeController = TextEditingController();
-  final TextEditingController valorController = TextEditingController();
-
   @override
-  void dispose() {
-    nomeController.dispose();
-    valorController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    nome = widget.transacao['nome'];
+    valor = widget.transacao['valor'];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Criar Transação'),
+        title: Text('Editar Transação'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -38,11 +38,11 @@ class _FormPageViewState extends State<FormPageView> {
           child: Column(
             children: [
               TextFormField(
-                controller: nomeController,
                 decoration: InputDecoration(
                   labelText: 'Nome',
                   border: OutlineInputBorder(),
                 ),
+                initialValue: nome,
                 onChanged: (value) {
                   setState(() {
                     nome = value;
@@ -58,12 +58,12 @@ class _FormPageViewState extends State<FormPageView> {
               const SizedBox(height: 16), 
 
               TextFormField(
-                controller: valorController,
                 decoration: InputDecoration(
                   labelText: 'Valor',
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
+                initialValue: valor.toString(),
                 onChanged: (value) {
                   setState(() {
                     valor = double.tryParse(value) ?? 0.0;
@@ -73,7 +73,7 @@ class _FormPageViewState extends State<FormPageView> {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira um valor.';
                   }
-                  if (double.tryParse(value) == null || double.tryParse(value)! <= 0) {
+                  if (double.tryParse(value) == null || double.tryParse(value) !<= 0) {
                     return 'Por favor, insira um valor válido.';
                   }
                   return null;
@@ -84,38 +84,27 @@ class _FormPageViewState extends State<FormPageView> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    transacaoService.create({'nome': nome, 'valor': valor}).then((_) {
+                    transacaoService.update(widget.transacao['id'], {
+                      'nome': nome,
+                      'valor': valor
+                    }).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Transação criada com sucesso!')),
+                        SnackBar(content: Text('Transação editada com sucesso!')),
                       );
-    
-                      setState(() {
-                        nome = '';
-                        valor = 0.0;
-                        nomeController.clear();
-                        valorController.clear();
-                      });
+                      Navigator.of(context).pop(); // Volta para a tela anterior
                     }).catchError((error) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Erro ao criar transação: $error')),
+                        SnackBar(content: Text('Erro ao editar transação: $error')),
                       );
                     });
                   }
                 },
-                child: const Text('Criar'),
+                child: const Text('Salvar'),
               ),
             ],
           ),
         ),
       ),
-
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.list),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/listTransacao');
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

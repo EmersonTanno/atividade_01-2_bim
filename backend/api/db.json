@@ -2,23 +2,13 @@
   "transacoes": [
     {
       "id": "1",
-      "nome": "Joaquim",
-      "valor": 1245
+      "nome": "Kannon",
+      "valor": 3452.97
     },
     {
       "id": "2",
-      "nome": "Kannon",
-      "valor": 12
-    },
-    {
-      "id": "4",
-      "nome": "Saga",
-      "valor": 10000
-    },
-    {
-      "id": "5",
-      "nome": "Dustopia",
-      "valor": 123
+      "nome": "Seraph",
+      "valor": 1500.5
     }
   ]
 }

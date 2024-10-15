@@ -1,4 +1,6 @@
+import 'package:atividade_01/views/edit_transacoes_page_view.dart';
 import 'package:atividade_01/views/form_page_view.dart';
+import 'package:atividade_01/views/transacao_list_page_view.dart';
 import 'package:flutter/material.dart';
 
 class AppWidget extends StatelessWidget {
@@ -15,7 +17,8 @@ class AppWidget extends StatelessWidget {
           ),
           initialRoute: '/',
           routes: {
-            '/': (context) => FormPageView()
+            '/': (context) => FormPageView(),
+            '/listTransacao': (context) => TransacaoListPageView(),
           }
         );
       },
